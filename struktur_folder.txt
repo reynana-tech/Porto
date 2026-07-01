@@ -1,0 +1,59 @@
+FOLDER STRUCTURE: TUGAS_PORTOFOLIO
+=================================
+
+TUGAS_PORTOFOLIO/
+├── Backend/
+│   ├── admin/
+│   │   ├── dashboard.py       # API statistik & manajemen pesan kontak
+│   │   ├── experience.py      # CRUD untuk data pengalaman (experiences)
+│   │   ├── login.py           # Menangani sesi & otentikasi login admin
+│   │   ├── profiles.py        # CRUD untuk profil personal pengguna
+│   │   ├── projects.py        # CRUD untuk data proyek (portfolio projects)
+│   │   ├── skills.py          # CRUD untuk data keahlian (skills)
+│   │   └── upload.py          # Integrasi upload Cloudinary dengan local fallback
+│   └── utama/
+│       └── utama.py           # Menyajikan data publik & memicu Resend Email API
+├── Frontend/
+│   ├── admin/
+│   │   ├── css/               # Kumpulan stylesheet spesifik per manajemen page
+│   │   │   ├── base.css
+│   │   │   ├── dashboard.css
+│   │   │   ├── experience.css
+│   │   │   ├── login.css
+│   │   │   ├── profiles.css
+│   │   │   ├── projects.css
+│   │   │   └── skills.css
+│   │   ├── js/                # Kumpulan skrip logika AJAX & API calls
+│   │   │   ├── api.js
+│   │   │   ├── base.js
+│   │   │   ├── dashboard.js
+│   │   │   ├── experience.js
+│   │   │   ├── login.js
+│   │   │   ├── profiles.js
+│   │   │   ├── projects.js
+│   │   │   └── skills.js
+│   │   ├── base.html          # Shell layout utama pembungkus admin page
+│   │   ├── dashboard.html     # Dashboard statistik admin
+│   │   ├── experience.html    # Halaman manajemen CRUD pengalaman kerja
+│   │   ├── login.html         # Form autentikasi login (admin / admin123)
+│   │   ├── profiles.html      # Form manajemen CRUD profil personal
+│   │   ├── projects.html      # Halaman manajemen CRUD proyek portfolio
+│   │   └── skills.html        # Halaman manajemen CRUD data keahlian
+│   └── utama/
+│       ├── css/
+│       │   └── style.css      # Desain dinamis halaman utama portofolio publik
+│       └── js/
+│           └── script.js      # Logika frontpage, scroll animator, ajax contact
+├── .env                       # File rahasia berisi API keys (TiDB, Cloudinary, Resend)
+├── .env.example               # Contoh blueprint pendaftaran API keys .env
+├── .gitignore                 # Mengabaikan file tidak perlu saat di-push ke git
+├── app.py                     # Entry point Flask utama pendiri web server
+├──CA.pem
+├── config.py                  # Penghubung variabel .env ke sistem kode Flask
+├── DB_682024083_Shafa.sql               # Database schemas dan data awal (DB_NIM_NAMA.sql)
+├── favicon.ico                # Ikon web browser
+├── index.html                 # Halaman beranda portofolio publik utama
+├── model.py                   # Abstraksi koneksi PyMySQL (TiDB) & local SQL fallback
+├── README.md                  # Panduan lengkap instalasi & cara menjalankan aplikasi
+├──requirements.txt           # Kumpulan paket library Python yang harus di-install
+└── struktur_folder.txt           # Kumpulan paket library Python yang harus di-install

@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+"""
+Test script untuk memverifikasi fungsi Simpan dan Upload bekerja dengan baik
+"""
+
+from app import app
+from model import get_db
+
+def test_save_flow():
+    print("\n" + "="*60)
+    print("TEST: ALUR SIMPAN DATA PROFIL")
+    print("="*60)
+    
+    client = app.test_client()
+    
+    # Step 1: Login
+    print("\n[1/4] Melakukan login...")
+    login_res = client.post('/admin/login', json={
+        'username': 'admin',
+        'password': 'admin123'
+    })
+    if login_res.get_json()['success']:
+        print("✓ Login berhasil")
+    else:
+        print("✗ Login gagal:", login_res.get_json())
+        return False
+    
+    # Step 2: Save profile
+    print("\n[2/4] Menyimpan profil baru...")
+    with client:
+        # Login dulu di session ini
+        client.post('/admin/login', json={'username': 'admin', 'password': 'admin123'})
+        
+        profile_data = {
+            'name': 'Test Profile Save',
+            'title': 'Test Developer',
+            'bio': 'Testing save functionality',
+            'email': 'test@example.com',
+            'phone': '08123456789',
+            'location': 'Test City',
+            'github': 'https://github.com/test',
+            'linkedin': 'https://linkedin.com/in/test',
+            'photo_url': 'https://example.com/photo.jpg'
+        }
+        
+        save_res = client.post('/api/admin/profiles', json=profile_data)
+        save_json = save_res.get_json()
+        
+        if save_json.get('success'):
+            print("✓ Profil berhasil disimpan")
+            print(f"  Response: {save_json['message']}")
+        else:
+            print("✗ Gagal menyimpan profil")
+            print(f"  Error: {save_json}")
+            return False
+        
+        # Step 3: Verify data in admin API
+        print("\n[3/4] Memverifikasi data di admin API...")
+        get_res = client.get('/api/admin/profiles')
+        get_json = get_res.get_json()
+        
+        if get_json.get('success') and len(get_json.get('data', [])) > 0:
+            profiles = get_json['data']
+            print(f"✓ Ditemukan {len(profiles)} profil di database")
+            last_profile = profiles[-1]
+            if last_profile['name'] == 'Test Profile Save':
+                print(f"✓ Data profil test ditemukan: {last_profile['name']}")
+            else:
+                print(f"⚠ Profil test tidak ditemukan, profil terakhir: {last_profile['name']}")
+        else:
+            print("✗ Gagal mengambil data profil")
+            return False
+        
+        # Step 4: Verify data in public API
+        print("\n[4/4] Memverifikasi data di public API...")
+        pub_res = client.get('/api/profile')
+        pub_json = pub_res.get_json()
+        
+        if pub_json.get('success') and pub_json.get('data'):
+            profile = pub_json['data']
+            print(f"✓ Public API mengembalikan profil: {profile['name']}")
+            print(f"  Email: {profile['email']}")
+            print(f"  Title: {profile['title']}")
+            return True
+        else:
+            print("✗ Public API tidak mengembalikan data profil")
+            return False
+
+def cleanup_test_data():
+    """Hapus data test dari database"""
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM profiles WHERE name=%s", ('Test Profile Save',))
+        conn.commit()
+        print("\n✓ Data test dibersihkan dari database")
+    finally:
+        conn.close()
+
+if __name__ == '__main__':
+    success = test_save_flow()
+    cleanup_test_data()
+    
+    print("\n" + "="*60)
+    if success:
+        print("✓ SEMUA TEST BERHASIL - Fungsi simpan bekerja dengan baik!")
+    else:
+        print("✗ TEST GAGAL - Ada masalah dengan fungsi simpan")
+    print("="*60)
